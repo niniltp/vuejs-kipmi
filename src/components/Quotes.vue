@@ -1,16 +1,24 @@
 <template>
     <div class="container">
         <div class="main">
-            <form>
-                <input type="text" placeholder="Title" class="newQuote" v-model="newQuote.title"
+            <form class="form-addQuote">
+                <input type="text" placeholder="Title" v-model="newQuote.title"
                        @keyup.enter="addQuote">
-                <input type="text" placeholder="Author" class="newQuote" v-model="newQuote.author"
+                <input type="text" placeholder="Author" v-model="newQuote.author"
                        @keyup.enter="addQuote">
-                <input type="text" placeholder="From" class="newQuote" v-model="newQuote.from"
+                <input type="text" placeholder="From" v-model="newQuote.from"
                        @keyup.enter="addQuote">
-                <textarea class="newQuote" v-model="newQuote.content" @keydown.enter.exact.prevent
+                <textarea v-model="newQuote.content" @keydown.enter.exact.prevent
                           @keydown.enter.shift.exact="newline" @keyup.enter="addQuote" rows="3"
                           placeholder="Write something to remember" spellcheck="true"></textarea>
+                <SearchbarAutocomplete v-bind:placeholder="'Add some tags'" v-bind:items="tags"
+                                       v-on:addTagToNewQuote="addTagToNewQuote"></SearchbarAutocomplete>
+                <!--                <p class="tags">Tags: <button v-for="(newQuoteTag, newQuoteTagIndex) in newQuote.tags" :key="newQuoteTagIndex" class="tag" type="button">{{newQuoteTag}}</button></p>-->
+                <p class="tags">
+                    Tags:
+                    <Tag v-for="(newQuoteTag, newQuoteTagIndex) in newQuote.tags" :key="newQuoteTagIndex"
+                         v-bind:name="newQuoteTag" v-on:removeTag="removeTagToNewQuote(newQuoteTag)" class="tag" type="button"></Tag>
+                </p>
             </form>
             <div class="quotes">
                 <ul>
@@ -33,11 +41,15 @@
 
 <script>
     import Quote from './Quote.vue'
+    import SearchbarAutocomplete from './SearchbarAutocomplete.vue'
+    import Tag from './Tag.vue'
 
     export default {
         name: 'quotes',
         components: {
-            Quote
+            Quote,
+            SearchbarAutocomplete,
+            Tag
         },
         data() {
             return {
@@ -47,7 +59,8 @@
                         title: 'quote 1',
                         author: '',
                         from: 'Somewhere',
-                        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at rhoncus est. Fusce felis sem, dignissim vel felis sit amet, scelerisque tempus orci. Quisque malesuada neque a leo viverra, a pharetra dui maximus. Curabitur nunc purus, porta et nisi ultricies, feugiat gravida velit. Donec ac semper arcu. Nulla lacinia erat sed est condimentum pellentesque. Sed ante libero, pharetra et ultrices non.'
+                        content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed at rhoncus est. Fusce felis sem, dignissim vel felis sit amet, scelerisque tempus orci. Quisque malesuada neque a leo viverra, a pharetra dui maximus. Curabitur nunc purus, porta et nisi ultricies, feugiat gravida velit. Donec ac semper arcu. Nulla lacinia erat sed est condimentum pellentesque. Sed ante libero, pharetra et ultrices non.',
+                        tags: ['earth']
                     },
                     {
                         hover: false,
@@ -62,14 +75,17 @@
                             '\n' +
                             'Integer auctor blandit erat in maximus. Mauris rutrum non sapien in fermentum. Pellentesque metus velit, tincidunt sed neque id, pretium gravida nulla. Vestibulum eu sapien nunc. In auctor purus a tortor blandit, eu tempor mauris lobortis. Sed eu leo porttitor, scelerisque tellus eu, pretium turpis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Proin eget aliquet justo, placerat consectetur ante. Proin blandit tellus sit amet laoreet hendrerit. Praesent a nunc ultrices neque pretium auctor in viverra lacus. Donec quam nunc, facilisis vel sem quis, egestas ullamcorper mi. Praesent rutrum tempor nisi eleifend interdum. Fusce efficitur, ante ac semper blandit, augue augue dictum massa, in elementum leo lectus a lectus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.\n' +
                             '\n' +
-                            'Phasellus nec elit ac nunc vehicula faucibus. Vestibulum eu venenatis orci. Praesent molestie consectetur tortor, quis volutpat elit malesuada id. Donec vitae felis tellus. Ut laoreet elit condimentum dapibus eleifend. Praesent vel interdum quam. Nunc a est quis urna gravida aliquet a quis risus. Nam feugiat blandit ante, eu pulvinar turpis fringilla pulvinar. Suspendisse potenti. Praesent pretium aliquam ex et volutpat. Proin dictum lacinia risus, at mattis mi vehicula sed. Morbi placerat est sed ante lacinia, non luctus massa rhoncus. Integer sagittis ex facilisis varius iaculis.'
+                            'Phasellus nec elit ac nunc vehicula faucibus. Vestibulum eu venenatis orci. Praesent molestie consectetur tortor, quis volutpat elit malesuada id. Donec vitae felis tellus. Ut laoreet elit condimentum dapibus eleifend. Praesent vel interdum quam. Nunc a est quis urna gravida aliquet a quis risus. Nam feugiat blandit ante, eu pulvinar turpis fringilla pulvinar. Suspendisse potenti. Praesent pretium aliquam ex et volutpat. Proin dictum lacinia risus, at mattis mi vehicula sed. Morbi placerat est sed ante lacinia, non luctus massa rhoncus. Integer sagittis ex facilisis varius iaculis.',
+                        tags: ['life', 'people']
                     }],
                 newQuote: {
                     title: '',
                     author: '',
                     from: '',
-                    content: ''
-                }
+                    content: '',
+                    tags: []
+                },
+                tags: ['life', 'work', 'earth', 'people']
             }
         },
         methods: {
@@ -98,16 +114,26 @@
                         title: this.newQuote.title,
                         author: this.newQuote.author,
                         from: this.newQuote.from,
-                        content: this.newQuote.content
+                        content: this.newQuote.content,
+                        tags: this.newQuote.tags
                     });
                     this.newQuote = {
                         title: '',
                         author: '',
                         from: '',
-                        content: ''
+                        content: '',
+                        tags: ''
                     }
                     this.showNotifSuccessAddQuote();
-                }else this.showNotifErrorAddQuote();
+                } else this.showNotifErrorAddQuote();
+            },
+            addTagToNewQuote(tag) {
+                if (!this.newQuote.tags.includes(tag)) {
+                    this.newQuote.tags.push(tag);
+                }
+            },
+            removeTagToNewQuote(tag) {
+                this.newQuote.tags = this.newQuote.tags.filter(i => i !== tag)
             },
             removeQuote(quote) {
                 this.quotes = this.quotes.filter(i => i !== quote)
@@ -127,7 +153,7 @@
     }
 
     ul li {
-        padding: 10px 30px 50px 30px;
+        padding: 10px 30px 30px 30px;
         background-color: #E0EDF4;
         border-left: 5px solid #3EB3F6;
         margin-bottom: 2px;
@@ -141,23 +167,16 @@
         margin-bottom: 50px;
     }
 
-    .newQuote {
-        width: 100%;
-        border: 0;
+    .form-addQuote {
+        background: #323333;
+    }
+
+    .tags {
         padding: 20px;
-        font-size: 1.3em;
-        background-color: #323333;
+        text-align: left;
+        font-style: italic;
+        font-size: 1.1em;
         color: #a0adb7;
-    }
-
-    textarea {
-        resize: vertical;
-        overflow: auto;
-    }
-
-    input:focus, textarea:focus {
-        background-color: #373838;
-        outline: none;
     }
 
     .footer {

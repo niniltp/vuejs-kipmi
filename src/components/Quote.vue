@@ -7,6 +7,7 @@
                 <footer class="blockquote-footer">
                     <span v-if="quote.author === ''">Unknown</span><span v-else>{{quote.author}}</span>
                     <span v-if="quote.from !== ''">, from <cite>{{quote.from}}</cite></span>
+                    <p class="tags" v-if="quote.tags.length > 0">Tags: <span v-for="(tag, index) in quote.tags" :key="index"><a href="#">{{tag}}</a><span v-if="index !== quote.tags.length - 1">, </span></span></p>
                 </footer>
             </div>
             <i v-if="quote.hover == true" class="fa fa-minus-circle fa-2x destroy" @click="$emit('removeQuote', quote)"></i>
@@ -66,6 +67,12 @@
     .blockquote-footer {
         text-align: right;
         font-size: 1em;
+    }
+
+    .tags {
+        text-align: left;
+        font-style: italic;
+        font-size: 0.9em;
     }
 
     .destroy {

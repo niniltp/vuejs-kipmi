@@ -52,6 +52,35 @@ export default {
     margin: 30px;
   }
 
+  a {
+    color: #3EB3F6;
+  }
+
+  a:hover {
+    color: #3E5252;
+    text-decoration: underline;
+  }
+
+  input, textarea {
+    width: 100%;
+    border: 0;
+    padding: 20px;
+    font-size: 1.3em;
+    background-color: #323333;
+    color: #a0adb7;
+  }
+
+  textarea {
+    resize: vertical;
+    overflow: auto;
+  }
+
+  input:focus, textarea:focus {
+    background-color: #373838;
+    outline: none;
+  }
+
+
   .notification-title {
     font-size: 2em;
   }
