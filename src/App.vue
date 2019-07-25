@@ -10,7 +10,7 @@
                       @showNotifSuccessAddQuote="showNotifSuccessAddQuote"
                       @showNotifErrorAddQuote="showNotifErrorAddQuote"></AddQuote>-->
             <input type="text" placeholder="Search...">
-            <AddQuote @addQuote="addQuote" @showNotifSuccessAddTag="showNotifSuccessAddTag" @showNotifErrorAddQuote="showNotifErrorAddQuote" :tags="tags" v-if="addingQuote === true"></AddQuote>
+            <AddQuote @addQuote="addQuote" @addTag="addTag" @showNotifSuccessAddTag="showNotifSuccessAddTag" @showNotifErrorAddQuote="showNotifErrorAddQuote" :tags="tags" v-if="addingQuote === true"></AddQuote>
             <Quotes :quotes="quotes" :tags="tags" @removeQuote="removeQuote" @show="show"></Quotes>
             <footer class="footer">
                 <p> Keep in mind.</p>
