@@ -15,7 +15,7 @@
     }
 </script>
 
-<style>
+<style scoped>
     .tag {
         border: #E0EDF4 solid;
         border-radius: 20px;

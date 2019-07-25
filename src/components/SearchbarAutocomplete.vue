@@ -1,6 +1,6 @@
 <template>
     <div class="autocomplete">
-        <input type="text" v-bind:placeholder="placeholder" v-model="search" @click="isOpen = true" @input="onChange"/>
+        <input type="text" v-bind:placeholder="placeholder" v-model="search" @click="isOpen = !isOpen" @keyup.enter="setResult(search)" @input="onChange"/>
         <ul class="autocomplete-results" v-show="isOpen">
             <li class="autocomplete-result" v-for="(result, index) in results" :key="index" @click="setResult(result)">{{result}}</li>
         </ul>
@@ -14,12 +14,13 @@
         data () {
             return {
                 search: '',
-                results: this.items,
+                results: this.items.sort(),
                 isOpen: false
             }
         },
         methods: {
             onChange() {
+                this.results.sort();
                 this.isOpen = true;
                 this.filterResults();
             },
@@ -29,17 +30,18 @@
             setResult(result) {
                 this.$emit('addTagToNewQuote', result);
                 this.search = '';
+                this.results = this.items;
                 this.isOpen = false;
+                this.results.sort();
             }
         }
     }
 </script>
 
-<style>
+<style scoped>
     .autocomplete-results {
         padding: 0 0 5px;
         margin: 0;
-        border: 1px solid #eeeeee;
         height: auto;
         color: #a0adb7;
         border: none;

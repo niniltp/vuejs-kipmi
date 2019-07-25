@@ -122,13 +122,19 @@
                         author: '',
                         from: '',
                         content: '',
-                        tags: ''
+                        tags: []
                     }
                     this.showNotifSuccessAddQuote();
                 } else this.showNotifErrorAddQuote();
             },
             addTagToNewQuote(tag) {
+                // if the new quote doesn't already have this tag
                 if (!this.newQuote.tags.includes(tag)) {
+                    // if the tag doesn't exist in the tags list
+                    if(!this.tags.includes(tag)){
+                        // we create the new tag
+                        this.tags.push(tag)
+                    }
                     this.newQuote.tags.push(tag);
                 }
             },
