@@ -9,7 +9,7 @@
 
 <script>
     export default {
-        name: 'autocomplete',
+        name: 'SearchbarAutocomplete',
         props: ['placeholder', 'items'],
         data () {
             return {

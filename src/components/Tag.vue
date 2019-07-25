@@ -17,7 +17,7 @@
 
 <style scoped>
     .tag {
-        border: #E0EDF4 solid;
+        border: #E0EDF4 solid 2px;
         border-radius: 20px;
         padding: 2px 10px;
         background-color: transparent;
