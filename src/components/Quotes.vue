@@ -13,7 +13,6 @@
                           placeholder="Write something to remember" spellcheck="true"></textarea>
                 <SearchbarAutocomplete v-bind:placeholder="'Add some tags'" v-bind:items="tags"
                                        v-on:addTagToNewQuote="addTagToNewQuote"></SearchbarAutocomplete>
-                <!--                <p class="tags">Tags: <button v-for="(newQuoteTag, newQuoteTagIndex) in newQuote.tags" :key="newQuoteTagIndex" class="tag" type="button">{{newQuoteTag}}</button></p>-->
                 <p class="tags">
                     Tags:
                     <Tag v-for="(newQuoteTag, newQuoteTagIndex) in newQuote.tags" :key="newQuoteTagIndex"
@@ -89,12 +88,12 @@
             }
         },
         methods: {
-            showNotifSuccessAddQuote() {
+            showNotifSuccessAddQuote(item) {
                 const notif = {
                     group: 'general',
                     type: 'success',
                     title: 'Success',
-                    text: 'The quote was successfully added'
+                    text: 'The quote ' + item +  '  was successfully added'
                 };
                 this.$emit('show', notif);
             },
@@ -104,6 +103,15 @@
                     type: 'error',
                     title: 'Error',
                     text: 'The quote hasn\'t been added. Check if all required fields have been filled'
+                };
+                this.$emit('show', notif);
+            },
+            showNotifSuccessAddTag(item) {
+                const notif = {
+                    group: 'general',
+                    type: 'success',
+                    title: 'Success',
+                    text: 'The tag #' + item +  ' was successfully created'
                 };
                 this.$emit('show', notif);
             },
@@ -117,6 +125,9 @@
                         content: this.newQuote.content,
                         tags: this.newQuote.tags
                     });
+
+                    this.showNotifSuccessAddQuote(this.newQuote.title);
+
                     this.newQuote = {
                         title: '',
                         author: '',
@@ -124,7 +135,6 @@
                         content: '',
                         tags: []
                     }
-                    this.showNotifSuccessAddQuote();
                 } else this.showNotifErrorAddQuote();
             },
             addTagToNewQuote(tag) {
@@ -132,8 +142,10 @@
                 if (!this.newQuote.tags.includes(tag)) {
                     // if the tag doesn't exist in the tags list
                     if(!this.tags.includes(tag)){
-                        // we create the new tag
+                        // create the new tag
                         this.tags.push(tag)
+                        // notif the user
+                        this.showNotifSuccessAddTag(tag);
                     }
                     this.newQuote.tags.push(tag);
                 }
@@ -183,6 +195,7 @@
         font-style: italic;
         font-size: 1.1em;
         color: #a0adb7;
+        margin-bottom: 0;
     }
 
     .footer {
